@@ -42,7 +42,8 @@ end
 
 `vagrant up`
 
-En el caso de la máquina *web* solo aparecerá el adaptador de red nat y en la máquina *proxy* habrá dos.
+En el caso de la máquina *web* solo aparecerá el adaptador de red nat y en la máquina *proxy* habrá dos.  
+Si pregunta *"Which interface should the network bridge to?"*, se escogerá la opción *Ethernet Connection*.
 
 ## Configuración de la máquina web
 
@@ -86,6 +87,8 @@ Instalación de curl:
 Se prueba el curl:  
 `curl http://localhost:8080`  
 `curl http://w1.example.test:8080`
+
+<img src="./files/imgs/1.png">
 
 ## Configuración del proxy
 
@@ -133,10 +136,10 @@ Se reinicia el servicio:
 `sudo systemctl restart nginx`
 
 En la parte de cliente Windows habría que editar el fichero *C:\Windows\System32\drivers\etc\hosts* añadiendo la siguiente línea:  
-`10.108.55.1 www.example.test`  
-(En este caso es la dirección ip pública que se genera con la máquina, se mantiene solo un tiempo)
+`10.108.69.1 www.example.test`  
+(En este caso es la dirección ip pública que se genera con la máquina *proxy*, se mantiene solo un tiempo)
 
-<img src="./files/imgs/1.png">
+<img src="./files/imgs/2.png">
 
 ## Heramientas de desarrollador
 
@@ -145,7 +148,7 @@ Ver el tráfico:
 `vagrant ssh -c "sudo tail /var/log/nginx/access.log" proxy`
 
 Desde las herramientas de desarrollador del navegador, en *Red*, se habilita la opción *Desactivar caché*:  
-<img src="./files/imgs/2.png">
+<img src="./files/imgs/3.png">
 
 ## Añadir cabeceras al proxy inverso
 
@@ -153,10 +156,24 @@ Desde las herramientas de desarrollador del navegador, en *Red*, se habilita la 
 
 `sudo nano /etc/nginx/sites-enabled/default`  
 En *location* se añade:  
-`add_header Host proxy_example;`  
+`add_header X-friend acarmar;`  
 proxy_set_header Host $host;
 
 Se reinicia el servicio:  
 `sudo systemctl restart nginx`
 
-<img src="./files/imgs/3.png">
+<img src="./files/imgs/4.png">
+
+## Añadir cabeceras al servidor web
+
+`vagrant ssh web`
+
+`sudo nano /etc/nginx/sites-enabled/default`  
+En *location* se añade:  
+`add_header Host w1.example.test;`  
+proxy_set_header Host $host;
+
+Se reinicia el servicio:  
+`sudo systemctl restart nginx`
+
+<img src="./files/imgs/5.png">
