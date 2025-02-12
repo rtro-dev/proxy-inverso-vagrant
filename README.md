@@ -168,7 +168,7 @@ Se reinicia el servicio:
 
 `vagrant ssh web`
 
-`sudo nano /etc/nginx/sites-enabled/default`  
+`sudo nano /etc/nginx/sites-enabled/w1`  
 En *location* se añade:  
 `add_header Host w1.example.test;`  
 proxy_set_header Host $host;
